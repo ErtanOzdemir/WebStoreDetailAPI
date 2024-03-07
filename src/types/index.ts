@@ -1,0 +1,1 @@
+export { WebStoreDetailAPIOptions } from "./WebStoreDetailAPIOptions";
