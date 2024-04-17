@@ -1,12 +1,12 @@
-import { AxiosError } from "axios";
+import { AxiosError } from 'axios';
 import {
   ExtensionDetail,
-  WebStoreDetailAPI,
-} from "./../types/WebStoreDetailAPI";
-import axios from "axios";
-import { WebStoreDetailAPIOptions } from "../types";
-import * as cheerio from "cheerio";
-import ExtensionError from "../error/ExtensionError";
+  WebStoreDetailAPI
+} from './../types/WebStoreDetailAPI';
+import axios from 'axios';
+import { WebStoreDetailAPIOptions } from '../types';
+import * as cheerio from 'cheerio';
+import ExtensionError from '../error/ExtensionError';
 
 export class OperaDetailAPI implements WebStoreDetailAPI {
   private headers: any;
@@ -18,7 +18,7 @@ export class OperaDetailAPI implements WebStoreDetailAPI {
   async getDetail(extensionId: string): Promise<ExtensionDetail> {
     try {
       if (!extensionId) {
-        throw new ExtensionError("Extension id is required");
+        throw new ExtensionError('Extension id is required');
       }
 
       const url = `https://addons.opera.com/en/extensions/details/${extensionId}`;
@@ -54,14 +54,14 @@ export class OperaDetailAPI implements WebStoreDetailAPI {
         version,
         screenshots,
         filesize,
-        socials,
+        socials
       };
 
       return details;
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 404) {
-          throw new ExtensionError("Extension not found.");
+          throw new ExtensionError('Extension not found.');
         }
       }
       if (error instanceof ExtensionError) {
@@ -69,24 +69,24 @@ export class OperaDetailAPI implements WebStoreDetailAPI {
       }
 
       throw new Error(
-        "An error occurred while fetching the extension details."
+        'An error occurred while fetching the extension details.'
       );
     }
   }
 
   private parseIcon($: cheerio.Root): any | null {
-    const icon = $(".icon-pkg").attr("src");
+    const icon = $('.icon-pkg').attr('src');
 
     return icon || null;
   }
 
   private parseTitle($: cheerio.Root): string | null {
-    const title = $("h1").text()?.trim();
+    const title = $('h1').text()?.trim();
     return title || null;
   }
 
   private parseRateCount($: cheerio.Root): string | null {
-    const raterCount = $("#rating-count").text();
+    const raterCount = $('#rating-count').text();
 
     return raterCount || null;
   }
@@ -100,19 +100,19 @@ export class OperaDetailAPI implements WebStoreDetailAPI {
   }
 
   private parseRating($: cheerio.Root): number | null {
-    const rating = $("#rating-value").text();
+    const rating = $('#rating-value').text();
     return Number(rating) || null;
   }
 
   private parseUpdated($: cheerio.Root): Date | null {
     const updateStr = $(`dt:contains("Last update")`).next().text();
-    const date = new Date(updateStr.replace(".", ""));
+    const date = new Date(updateStr.replace('.', ''));
 
     return date;
   }
 
   private parseDescription($: cheerio.Root): string | null {
-    const description = $("section.description").html();
+    const description = $('section.description').html();
 
     return description || null;
   }
@@ -124,8 +124,8 @@ export class OperaDetailAPI implements WebStoreDetailAPI {
   }
 
   private parseScreenshot($: cheerio.Root): string[] | [] {
-    const screenshots = $(".thumbnail a").map((i, el) => {
-      return $(el).attr("href");
+    const screenshots = $('.thumbnail a').map((i, el) => {
+      return $(el).attr('href');
     });
 
     return screenshots.get() || [];
@@ -156,7 +156,7 @@ export class OperaDetailAPI implements WebStoreDetailAPI {
     return {
       homepage: homepage?.trim() || null,
       support: support?.trim() || null,
-      email: email || null,
+      email: email || null
     };
   }
 }

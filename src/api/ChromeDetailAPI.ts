@@ -1,8 +1,8 @@
-import axios, { AxiosError } from "axios";
-import { WebStoreDetailAPIOptions } from "../types";
-import * as cheerio from "cheerio";
-import { ExtensionDetail, WebStoreDetailAPI } from "../types/WebStoreDetailAPI";
-import ExtensionError from "../error/ExtensionError";
+import axios, { AxiosError } from 'axios';
+import { WebStoreDetailAPIOptions } from '../types';
+import * as cheerio from 'cheerio';
+import { ExtensionDetail, WebStoreDetailAPI } from '../types/WebStoreDetailAPI';
+import ExtensionError from '../error/ExtensionError';
 
 export class ChromeDetailAPI implements WebStoreDetailAPI {
   private headers: any;
@@ -14,7 +14,7 @@ export class ChromeDetailAPI implements WebStoreDetailAPI {
   async getDetail(extensionId: string): Promise<ExtensionDetail> {
     try {
       if (!extensionId) {
-        throw new ExtensionError("Extension id is required");
+        throw new ExtensionError('Extension id is required');
       }
 
       const url = `https://chrome.google.com/webstore/detail/${extensionId}`;
@@ -50,25 +50,25 @@ export class ChromeDetailAPI implements WebStoreDetailAPI {
         version,
         screenshots,
         filesize,
-        socials,
+        socials
       };
 
       return details;
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 404) {
-          throw new Error("Extension not found.");
+          throw new Error('Extension not found.');
         }
       }
       if (error instanceof ExtensionError) {
         throw Error(error.message);
       }
-      throw new Error("An error occurred while fetching extension details.");
+      throw new Error('An error occurred while fetching extension details.');
     }
   }
 
   private parseIcon($: cheerio.Root, extensionId: string): string | null {
-    const icon = $(`[href*=./detail/${extensionId}] img`).attr("src");
+    const icon = $(`[href*=./detail/${extensionId}] img`).attr('src');
 
     return icon || null;
   }
@@ -102,7 +102,7 @@ export class ChromeDetailAPI implements WebStoreDetailAPI {
       .text();
 
     const userCountMatch = userCountStr.match(/([\d,]+)/);
-    const userCount = userCountMatch ? userCountMatch[1] : "";
+    const userCount = userCountMatch ? userCountMatch[1] : '';
     return userCount || null;
   }
 
@@ -127,7 +127,7 @@ export class ChromeDetailAPI implements WebStoreDetailAPI {
   }
 
   private parseDescription($: cheerio.Root): string | null {
-    const description = $(`main div`).children().eq(2).find("p").eq(1).html();
+    const description = $(`main div`).children().eq(2).find('p').eq(1).html();
     return description;
   }
 
@@ -139,7 +139,7 @@ export class ChromeDetailAPI implements WebStoreDetailAPI {
   private parseScreenshot($: cheerio.Root): string[] | [] {
     const screenshots = $(`div[aria-label*="Preview slide"]`)
       .map((i, el) => {
-        return $(el).children().eq(0).attr("data-media-url");
+        return $(el).children().eq(0).attr('data-media-url');
       })
       .get();
 
@@ -163,8 +163,8 @@ export class ChromeDetailAPI implements WebStoreDetailAPI {
     support: string | null;
     email: string | null;
   } {
-    const homepage = $(`a:contains("Website")`).attr("href");
-    const support = $(`a:contains("Support")`).attr("href");
+    const homepage = $(`a:contains("Website")`).attr('href');
+    const support = $(`a:contains("Support")`).attr('href');
     const email = $(`summary:contains("Email")`)
       .parent()
       .children()
@@ -174,7 +174,7 @@ export class ChromeDetailAPI implements WebStoreDetailAPI {
     return {
       homepage: homepage || null,
       support: support || null,
-      email: email || null,
+      email: email || null
     };
   }
 }

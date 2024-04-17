@@ -1,3 +1,3 @@
-export { ChromeDetailAPI } from "./ChromeDetailAPI";
-export { FirefoxDetailAPI } from "./FirefoxDetailAPI";
-export { OperaDetailAPI } from "./OperaDetailAPI";
+export { ChromeDetailAPI } from './ChromeDetailAPI';
+export { FirefoxDetailAPI } from './FirefoxDetailAPI';
+export { OperaDetailAPI } from './OperaDetailAPI';

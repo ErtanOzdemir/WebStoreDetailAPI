@@ -1,12 +1,12 @@
-import { AxiosError } from "axios";
+import { AxiosError } from 'axios';
 import {
   ExtensionDetail,
-  WebStoreDetailAPI,
-} from "./../types/WebStoreDetailAPI";
-import axios from "axios";
-import { WebStoreDetailAPIOptions } from "../types";
-import * as cheerio from "cheerio";
-import ExtensionError from "../error/ExtensionError";
+  WebStoreDetailAPI
+} from './../types/WebStoreDetailAPI';
+import axios from 'axios';
+import { WebStoreDetailAPIOptions } from '../types';
+import * as cheerio from 'cheerio';
+import ExtensionError from '../error/ExtensionError';
 
 export class FirefoxDetailAPI implements WebStoreDetailAPI {
   private headers: any;
@@ -18,7 +18,7 @@ export class FirefoxDetailAPI implements WebStoreDetailAPI {
   async getDetail(extensionId: string): Promise<ExtensionDetail> {
     try {
       if (!extensionId) {
-        throw new ExtensionError("Extension id is required");
+        throw new ExtensionError('Extension id is required');
       }
 
       const url = `https://addons.mozilla.org/en-US/firefox/addon/${extensionId}`;
@@ -54,36 +54,36 @@ export class FirefoxDetailAPI implements WebStoreDetailAPI {
         version,
         screenshots,
         filesize,
-        socials,
+        socials
       };
 
       return details;
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 404) {
-          throw new Error("Extension not found.");
+          throw new Error('Extension not found.');
         }
       }
       if (error instanceof ExtensionError) {
         throw Error(error.message);
       }
-      throw new Error("An error occurred while fetching extension details.");
+      throw new Error('An error occurred while fetching extension details.');
     }
   }
 
   private parseIcon($: cheerio.Root): any | null {
-    const icon = $(".Addon-icon-image").attr("src");
+    const icon = $('.Addon-icon-image').attr('src');
 
     return icon || null;
   }
 
   private parseTitle($: cheerio.Root): string | null {
-    const title = $("h1").not("h1 span").text();
+    const title = $('h1').not('h1 span').text();
     return title || null;
   }
 
   private parseRateCount($: cheerio.Root): string | null {
-    const overallRatingCard = $(".MetadataCard.AddonMeta-overallRating");
+    const overallRatingCard = $('.MetadataCard.AddonMeta-overallRating');
     const ratersCountString = overallRatingCard.first().children().eq(1).text();
     const ratersCount = ratersCountString.match(/([\d,]+)/);
     const count = ratersCount ? ratersCount[0] : null;
@@ -92,7 +92,7 @@ export class FirefoxDetailAPI implements WebStoreDetailAPI {
   }
 
   private parseUserCount($: cheerio.Root): string | null {
-    const overallRatingCard = $(".MetadataCard.AddonMeta-overallRating");
+    const overallRatingCard = $('.MetadataCard.AddonMeta-overallRating');
     const userCountString = overallRatingCard.first().children().eq(0).text();
 
     const userCountMatch = userCountString.match(/([\d,]+)/);
@@ -102,7 +102,7 @@ export class FirefoxDetailAPI implements WebStoreDetailAPI {
   }
 
   private parseRating($: cheerio.Root): number | null {
-    const overallRatingCard = $(".MetadataCard.AddonMeta-overallRating");
+    const overallRatingCard = $('.MetadataCard.AddonMeta-overallRating');
     const ratingString = overallRatingCard
       .first()
       .children()
@@ -111,33 +111,33 @@ export class FirefoxDetailAPI implements WebStoreDetailAPI {
       .eq(1)
       .text();
 
-    const numberWithoutCommas = ratingString.replace(/,/g, "");
+    const numberWithoutCommas = ratingString.replace(/,/g, '');
     const rating = parseFloat(numberWithoutCommas);
 
     return rating || null;
   }
 
   private parseUpdated($: cheerio.Root): Date | null {
-    const dateStr = $(".Definition-dd.AddonMoreInfo-last-updated").text();
+    const dateStr = $('.Definition-dd.AddonMoreInfo-last-updated').text();
     const dateString = dateStr.match(/\((.*?)\)/)?.[1];
     const date = new Date(dateString as string);
     return date;
   }
 
   private parseDescription($: cheerio.Root): string | null {
-    const description = $(".AddonDescription-contents").html();
+    const description = $('.AddonDescription-contents').html();
     return description;
   }
 
   private parseVersion($: cheerio.Root): string | null {
-    const version = $(".Definition-dd.AddonMoreInfo-version").text();
+    const version = $('.Definition-dd.AddonMoreInfo-version').text();
     return version || null;
   }
 
   private parseScreenshot($: cheerio.Root): string[] | [] {
-    const screenshots = $(".ScreenShots-list img")
+    const screenshots = $('.ScreenShots-list img')
       .map((_i, el) => {
-        return $(el).attr("src");
+        return $(el).attr('src');
       })
       .get();
 
@@ -147,7 +147,7 @@ export class FirefoxDetailAPI implements WebStoreDetailAPI {
   private parseFilesize(
     $: cheerio.Root
   ): { size: number; unit: string } | null {
-    const size = $(".Definition-dd.AddonMoreInfo-filesize").text().split(" ");
+    const size = $('.Definition-dd.AddonMoreInfo-filesize').text().split(' ');
     return { size: Number(size[0]), unit: size[1] } || null;
   }
 
@@ -156,32 +156,32 @@ export class FirefoxDetailAPI implements WebStoreDetailAPI {
     support: string | null;
     email: string | null;
   } {
-    const homepage = $(".AddonMoreInfo-links-contents-list")
+    const homepage = $('.AddonMoreInfo-links-contents-list')
       .children()
       .eq(0)
       .children()
       .eq(0)
-      .attr("href");
+      .attr('href');
 
-    const support = $(".AddonMoreInfo-links-contents-list")
+    const support = $('.AddonMoreInfo-links-contents-list')
       .children()
       .eq(1)
       .children()
       .eq(0)
-      .attr("href");
+      .attr('href');
 
-    const email = $(".AddonMoreInfo-links-contents-list")
+    const email = $('.AddonMoreInfo-links-contents-list')
       .children()
       .eq(2)
       .children()
       .eq(0)
-      .attr("href")
-      ?.split("mailto:")[1];
+      .attr('href')
+      ?.split('mailto:')[1];
 
     return {
       homepage: homepage || null,
       support: support || null,
-      email: email || null,
+      email: email || null
     };
   }
 }

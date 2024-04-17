@@ -1,1 +1,1 @@
-export { WebStoreDetailAPIOptions } from "./WebStoreDetailAPIOptions";
+export { WebStoreDetailAPIOptions } from './WebStoreDetailAPIOptions';
